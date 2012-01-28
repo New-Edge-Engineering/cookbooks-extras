@@ -54,7 +54,7 @@ execute "./gl-system-install" do
   environment ({'HOME' => '/home/git', 'PATH' => '/home/git/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'})
   cwd "/home/git/gitolite/src"
   not_if {File.exists?("/home/git/repositories") }
-  return [0,1]
+  return [0,1] # Hack to fix install based on instructions.
 end
 
 search(:users) do |user|
