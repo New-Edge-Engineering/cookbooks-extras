@@ -22,3 +22,7 @@ when "debian", "ubuntu"
 else 
   package "git"
 end
+
+gem_package "ruby-shadow" do
+  :upgrade
+end
