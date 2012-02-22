@@ -1,0 +1,38 @@
+<% @virtualhosts.each do |host| -%>
+<VirtualHost <%= host[:ip_address].nil? || host[:ip_address].empty? ? '*' : host[:ip_address] %>:443>
+  ServerAdmin <%= host[:admin_email] %>
+  ServerName  <%= host[:server_name] %>
+<%  if host[:server_aliases] -%>
+  ServerAlias <%= host[:server_aliases] %>
+<%  end %>
+  
+  KeepAlive off
+  SSLEngine on
+  SSLOptions +StdEnvVars
+  SSLProtocol All
+  SSLCipherSuite HIGH:+MEDIUM:+TLSv1
+  SSLVerifyClient none
+  SSLCertificateFile <%= host[:ssl_crt] %>
+  SSLCertificateKeyFile <%= host[:ssl_key] %>
+  
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} ^/ [NC]
+  RewriteRule !^/login http://<%= host[:server_name] %>%{REQUEST_URI} [NC]
+  
+  # WSGIDaemonProcess trac-<%= host[:server_name].split('.').join('-') %> user=www-data group=www-data threads=25
+  WSGIScriptAlias / <%= host[:template][:trac_location] %>/apache/trac.wsgi
+
+  <Directory <%= host[:template][:trac_location] %>/apache/>
+    SetEnv trac.env_path <%= host[:template][:trac_location] %>
+    SetEnv PYTHON_EGG_CACHE <%= host[:template][:trac_location] %>/eggs
+    WSGIProcessGroup trac-<%= host[:server_name].split('.').join('-') %>
+    WSGIApplicationGroup %{GLOBAL}
+	Options MultiViews ExecCGI
+    Order deny,allow
+    Allow from all
+  </Directory>
+  
+  ErrorLog /var/log/apache2/<%= host[:log] %>.error.log
+  CustomLog /var/log/apache2/<%= host[:log] %>.access.log combined
+</VirtualHost>
+<% end -%>

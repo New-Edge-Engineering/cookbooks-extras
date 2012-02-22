@@ -1,0 +1,56 @@
+# Warning: Generated file, changes will be overwritten.
+
+# Djangos Application settings file
+from <%= @package %> import *
+
+DEBUG = <%= @debug %>
+TEMPLATE_DEBUG = <%= @template_debug %>
+
+DATABASES = {
+  'default': {
+    'ENGINE': '<%= @db_engine %>',
+    'NAME': '<%= @db_name %>',
+    <% if @db_user != :undef || @db_user != '' -%>
+    'USER': '<%= @db_user %>',
+    <% end -%>
+    <% if @db_password != :undef || @db_password != '' -%>
+    'PASSWORD': '<%= @db_password %>',
+    <% end -%>
+    <% if @db_host != :undef || @db_host != '' -%>
+    'HOST': '<%= @db_host %>',
+    <% end -%>
+    <% if @db_port != :undef || @db_port != '' -%>
+    'PORT': '<%= @db_port %>',
+    <% end -%>
+  }
+}
+
+MEDIA_ROOT = '<%= @media_root %>'
+MEDIA_URL = '<%= @media_url %>'
+
+STATIC_ROOT = '<%= @static_root %>'
+STATIC_URL = '<%= @static_url %>'
+
+<% if @admins != :undef -%>
+ADMINS = MANAGERS = (
+  <% @admins.each_pair do |k, v| -%>
+  ('<%= k %>', '<%= v %>'),
+  <% end -%>
+)
+<% end -%>
+
+TIME_ZONE = '<%= @time_zone %>'
+
+SITE_ID = <%= @site_id %>
+
+<% if @languages != :undef -%>
+LANGUAGES = (
+  <% @languages.each_pair do |k, v| -%>
+  ('<%= k %>', '<%= v %>'),
+  <% end -%>
+)
+<% end -%>
+
+<% @parameters.each do |key, value| %>
+<%= key %> = '<%= value %>'
+<% end -%>

@@ -1,0 +1,23 @@
+# Attribute type definitions
+attributetype ( 1.3.6.1.4.1.15527.143
+                NAME 'tracperm'
+                DESC 'Trac Permission'
+                EQUALITY caseIgnoreMatch
+                SUBSTR caseIgnoreSubstringsMatch
+                SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32} )
+
+# Class definitions
+objectclass ( 1.3.6.1.4.1.15527.8
+              NAME 'tracUser'
+              DESC 'A User with Trac permissions'
+              SUP top
+              AUXILIARY
+              MUST ( uid $ mail $ userpassword )
+              MAY ( tracperm $ displayname $ description ) )
+
+objectclass ( 1.3.6.1.4.1.15527.9
+              NAME 'tracGroup'
+              DESC 'Trac permission for a groupofnames'
+              SUP top
+              AUXILIARY
+              MAY ( tracperm ) )

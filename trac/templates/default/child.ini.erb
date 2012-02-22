@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+
+<% if @trac_header_logo -%>
+[header_logo]
+alt =    <%= @trac_header_logo[:alt] %>
+height = <%= @trac_header_logo[:height] %>
+link =   <%= @trac_header_logo[:link] %>
+src =    site/<%= @trac_header_logo[:logo] %>
+width =  <%= @trac_header_logo[:width] %>
+<% end -%>
+
+[inherit]
+file = /etc/trac/trac.ini
+
+<% if @trac_logging -%>
+[logging]
+log_file  = trac.log
+log_level = <% @trac_logging[:level] %>
+log_type  = <% @trac_logging[:type] %>
+<% end -%>
+
+<% if @trac_notification -%>
+[notification]
+smtp_enabled = true
+smtp_from = <%= @trac_notification[:smtp_from].nil? ? '' :  @trac_notification[:smtp_from] %>
+smtp_from_name = <%= @trac_notification[:smtp_from_name].nil? ? '' :  @trac_notification[:smtp_from_name] %>
+smtp_password = <%= @trac_notification[:smtp_password].nil? ? '' :  @trac_notification[:smtp_password] %>
+smtp_replyto = <%= @trac_notification[:smtp_reply_to].nil? ? '' :  @trac_notification[:smtp_reply_to] %>
+smtp_server = localhost
+smtp_subject_prefix = __default__
+smtp_user = <%= @trac_notification[:smtp_user].nil? ? '' :  @trac_notification[:smtp_user] %>
+<% end -%>
+
+<% if @trac_project -%>
+[project]
+admin           = <%= @trac_project[:admin].nil? ? '' : @trac_project[:admin] %>
+descr           = <%= @trac_project[:description].nil? ? '' : @trac_project[:description] %>
+footer          = Visit the Trac open source project at<br /><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
+icon            = common/<%= @trac_project[:icon].nil? ? '' : @trac_project[:icon] %>
+name            = <%= @trac_project[:name].nil? ? '' :  @trac_project[:name] %>
+url             = <%= @trac_project[:url].nil? ? '' :  @trac_project[:url] %>
+<% end -%>
+
+<% if @trac_repo -%>
+<%  case @trac_repo[:type] -%>
+<%   when 'svn' %>
+[svn]
+branches        = <%= @trac_repo[:branches].nil? ? '' : @trac_repo[:branches].join(',') %>
+tags            = <%= @trac_repo[:tags].nil? ? '' :  @trac_repo[:tags].join(',') %>
+<%  end -%>
+<% end -%>
+
+<% if @trac -%>
+[trac]
+backup_dir      = <%= @trac[:backup].nil? ? 'db' : @trac[:backup] %>
+base_url        = <%= @trac[:url].nil? ? '' : @trac[:url] %>
+<%  case @trac[:database][:type] -%>
+<%   when 'sqlite' -%>
+database        = sqlite:<%= @trac[:database][:location] %>/<%= @trac[:database][:name] %>.db
+<%   when 'pgsql' -%>
+database        = postgres://<%= @trac[:database][:username] %>:<%= @trac[:database][:password] %>@localhost:5432/<%= @trac[:database][:name] %>
+<%  end -%>
+<%= @trac[:mainnav].nil? ? '' : 'mainnav         = '+@trac[:mainnav].join(',') %>
+<%= @trac[:metanav].nil? ? '' : 'metanav         = '+@trac[:metanav].join(',') %>
+repository_dir  = <%= @trac[:repo_dir].nil? ? '' : @trac[:repo_dir] %>
+repository_type = <%= @trac[:repo_type].nil? ? '' : @trac[:repo_type] %>
+<% end -%>

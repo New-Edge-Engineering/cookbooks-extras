@@ -1,0 +1,72 @@
+<% case @type %>
+<% when "organization" %>
+dn: dc=<%= @item['domain'].split('.').first %>,dc=<%= @item['domain'].split('.').last %>
+objectClass: dcObject
+objectClass: organizationalUnit
+dc: <%= @item['domain'].split('.').first %>
+ou: <%= @item['name'] %>
+<% when "unit" %>
+dn: ou=<%= @item["unit"] %>,dc=<%= @item['domain'].split('.').first %>,dc=<%= @item['domain'].split('.').last %>
+objectClass: organizationalUnit
+ou: <%= @item["unit"] %>
+<% when "person" %>
+dn: uid=<%= @item['uid'] %>,ou=<%= @item['unit'] %>,dc=<%= @item['domain'].split('.').first %>,dc=<%= @item['domain'].split('.').last %>
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: svnAccount
+objectClass: tracUser
+objectClass: top
+uid: <%= @item['uid'] %>
+cn: <%= @item['forename'] %> <%= @item['surname'] %>
+sn: <%= @item['surname'] %>
+givenName: <%= @item['forename'] %>
+displayName: <%= @item['forename'] %> <%= @item['surname'] %>
+uidNumber: <%= @item['uidn'] %>
+gidNumber: 10000
+userPassword: w3lc0m3
+gecos: <%= @item['forename'] %> <%= @item['surname'] %>
+loginShell: /bin/bash
+homeDirectory: /home/<%= @item['uid'] %>
+shadowExpire: -1
+shadowFlag: 0
+shadowWarning: 7
+shadowMin: 0
+shadowMax: 999999
+shadowLastChange: 10877
+mail: <%= @item['email'] %>
+postalCode: <%= @item['postcode'] %>
+l: <%= @item['location'] %>
+o: <%= @item['organziation'] %>
+mobile: <%= @item['mobile'] %>
+homePhone: <%= @item['telephone'] %>
+title: <%= @item['title'] %>
+initials: <%= @item['initials'] %>
+<%  @item['svn'].each do |permission| %>
+svn: <%= permission %>
+<%  end
+    if @item['trac']
+     @item['trac'].each do |permission| %>
+tracperm: <%= permission %>
+<%   end
+    end%>
+<% when "group" %>
+dn: cn=<%= @item['name'] %>,ou=groups,dc=<%= @item['domain'].split('.').first %>,dc=<%= @item['domain'].split('.').last %>
+objectClass: <% if !@item['type'].nil? &&  @item['type'] == 'unique' %>groupOfUniqueNames<% else %>groupOfNames<% end %>
+<%  if @item['class']
+     @item['class'].each do |oClass|
+%>objectClass: <%= @item['class'] %>
+<%   end
+    end%>objectClass: top
+cn: <%= @item['name'] %>
+<%  @item['members'].each do |member| %>
+<%   if !@item['type'].nil? &&  @item['type'] == 'unique' %>uniqueMember<% else %>member<% end %>: <%= member %>
+<%  end %>
+<%  if @item['trac']
+     @item['trac'].each do |permission| %>
+tracperm: <%= permission %>
+<%   end
+    end %>
+<% end %>

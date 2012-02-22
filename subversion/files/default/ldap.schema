@@ -1,0 +1,16 @@
+# Attribute type definitions
+attributetype ( 1.3.6.1.4.1.15527.144
+                NAME 'svn'
+                DESC 'Subversion Permission'
+                EQUALITY caseIgnoreMatch
+                SUBSTR caseIgnoreSubstringsMatch
+                SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32})
+
+#Class definitions
+objectclass ( 1.3.6.1.4.1.15527.10
+              NAME 'svnAccount'
+              DESC 'A User with Subversion permissions'
+              SUP top
+              AUXILIARY
+              MUST ( uid $ cn $ userpassword )
+              MAY  ( svn ) )
