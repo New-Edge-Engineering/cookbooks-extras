@@ -3,6 +3,7 @@ default[:postfix][:myhostname]                 = fqdn
 default[:postfix][:mydomain]                   = domain
 default[:postfix][:myorigin]                   = "$myhostname"
 default[:postfix][:relayhost]                  = ""
+default[:postfix][:relayport]                  = ""
 default[:postfix][:mail_relay_networks]        = "127.0.0.0/8"
 
 default[:postfix][:smtpd_use_tls]              = "yes"

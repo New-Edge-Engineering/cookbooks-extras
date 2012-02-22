@@ -18,10 +18,17 @@
 # limitations under the License.
 #
 
-%w{ libsasl2-2  ca-certificates}.each do |pkg|
+%w{libsasl2-2  ca-certificates}.each do |pkg|
   package pkg do
     action :install
   end
+end
+
+bash "create-cacert.pem" do
+  cwd "/etc/postfix"
+  code <<-EOH
+  cat /etc/ssl/certs/Equifax_Secure_CA.pem >> cacert.pem
+  EOH
 end
 
 execute "postmap-sasl_passwd" do

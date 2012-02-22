@@ -1,8 +1,21 @@
 # -*- coding: utf-8 -*-
 
+[account-manager] # Plug-In addition
+account_changes_notify_addresses = 
+force_passwd_change = true
+generated_password_length = 8
+hash_method = HtDigestHashMethod
+notify_actions = []
+password_file =
+password_store = LdapAuthStore
+
 [attachment]
 max_size = 262144
 render_unsafe_content = false
+
+[breadcrumbs] # Plug-In Addition
+max_crumbs = 6
+paths = /wiki*,/ticket*,/milestone*
 
 [browser]
 color_scale = True
@@ -21,6 +34,68 @@ max_diff_bytes = 10000000
 max_diff_files = 0
 wiki_format_messages = true
 
+[components] # Addition to manage plug-ins
+accountldap.accountldap.accountldap = enabled
+acct_mgr.admin.accountmanageradminpages = enabled
+acct_mgr.api.accountmanager = enabled
+acct_mgr.db.sessionstore = disabled
+acct_mgr.guard.accountguard = enabled
+acct_mgr.htfile.abstractpasswordfilestore = enabled
+acct_mgr.htfile.htdigeststore = disabled
+acct_mgr.htfile.htpasswdstore = disabled
+acct_mgr.http.httpauthstore = disabled
+acct_mgr.ldap_store.ldapauthstore = enabled
+acct_mgr.notification.accountchangelistener = enabled
+acct_mgr.notification.accountchangenotificationadminpage = enabled
+acct_mgr.pwhash.htdigesthashmethod = enabled
+acct_mgr.pwhash.htpasswdhashmethod = enabled
+acct_mgr.web_ui.accountmodule = enabled
+acct_mgr.web_ui.loginmodule = enabled
+acct_mgr.web_ui.resetpwstore = enabled
+breadcrumbsnav.breadcrumbs.breadcrumbssystem = enabled
+depgraph.depgraph.depgraphmacro = enabled
+depgraph.web_ui.depgraphmodule = disabled
+graphviz.graphviz.graphviz = enabled
+hudsontrac.hudsontracplugin.hudsontracplugin = enabled
+iniadmin.iniadmin.iniadminplugin = enabled
+ldapauthstore.ldap_store.ldapauthstore = enabled
+ldapplugin.api.ldappermissiongroupprovider = enabled
+ldapplugin.api.ldappermissionstore = enabled
+mastertickets.api.masterticketssystem = enabled
+mastertickets.web_ui.masterticketsmodule = enabled
+nevernotifyupdaterplugin.api.nevernotifyupdatersetupparticipant = enabled
+permredirect.filter.permredirectmodule = enabled
+ticketdescription.* = enabled
+tracdependency.admin_webui.tracdependencyadminwebui = enabled
+tracdependency.tracdependency.tracdependency = enabled
+tracdependency.xmlrpc.workhoursrpc = enabled
+tracext.git.git_fs.gitconnector = enabled
+tracmenus.web_ui.menumanagermodule = enabled
+tracrpc.api.xmlrpcsystem = enabled
+tracrpc.json_rpc.jsonrpcprotocol = enabled
+tracrpc.search.searchrpc = enabled
+tracrpc.ticket.componentrpc = enabled
+tracrpc.ticket.milestonerpc = enabled
+tracrpc.ticket.priorityrpc = enabled
+tracrpc.ticket.resolutionrpc = enabled
+tracrpc.ticket.severityrpc = enabled
+tracrpc.ticket.statusrpc = enabled
+tracrpc.ticket.ticketrpc = enabled
+tracrpc.ticket.typerpc = enabled
+tracrpc.ticket.versionrpc = enabled
+tracrpc.web_ui.rpcweb = enabled
+tracrpc.wiki.wikirpc = enabled
+tracrpc.xml_rpc.xmlrpcprotocol = enabled
+trac.versioncontrol.web_ui.log.logmodule = enabled
+trac.web.auth.loginmodule = disabled
+worklog.api.worklogsetupparticipant = enabled
+worklog.ticket_daemon.worklogticketobserver = enabled
+worklog.ticket_filter.worklogticketaddon = enabled
+worklog.timeline_hook.worklogtimelineaddon = enabled
+worklog.webadminui.worklogadminpanel = enabled
+worklog.webui.worklogpage = enabled
+worklog.xmlrpc.worllogrpc = enabled
+
 [header_logo]
 alt = (please configure the [header_logo] section in trac.ini)
 height = -1
@@ -28,15 +103,42 @@ link =
 src = site/your_project_logo.png
 width = -1
 
+[hudson] # Plug-In Addition
+job_url =
+main_page = http://ci.newedgeengineering.com/
+
 [inherit]
 plugins_dir = 
-templates_dir = 
+templates_dir =
+
+[ldap] # Plug-In Addition
+enable          = true
+basedn          = <%= @trac_ldap[:basedn] %>
+bind_passwd     = <%= @trac_ldap[:bind_passwd] %>
+bind_user       = <%= @trac_ldap[:bind_user] %>
+group_bind      = true
+group_rdn       = ou=groups
+groupmember     = member
+groupmemberisdn = true
+groupname       = tracGroup
+manage_groups   = true
+store_bind      = true
+user_rdn        = ou=people
+attempts        = 1
+user_filter     = uid
+uidattr         = uid
+name            = displayName # LDAP Store mapper
+email           = mail # LDAP Store mapper
 
 [logging]
 log_file = trac.log
-# log_format = <inherited>
 log_level = DEBUG
 log_type = none
+
+[mastertickets] # Plug-In Addition
+dot_path = dot
+gs_path = gs
+use_gs = true
 
 [milestone]
 stats_provider = DefaultTicketGroupStatsProvider
@@ -54,23 +156,23 @@ treat_as_binary = application/octet-stream,application/pdf,application/postscrip
 
 [notification]
 admit_domains = 
-always_notify_owner = false
-always_notify_reporter = false
+always_notify_owner = true
+always_notify_reporter = true
 always_notify_updater = true
 ignore_domains = 
-mime_encoding = none
+mime_encoding = base64
 smtp_always_bcc = 
 smtp_always_cc = 
 smtp_default_domain = 
 smtp_enabled = false
-smtp_from = trac@<%= @node[:domain] %>
-smtp_from_name = 
+smtp_from = trac@<%= @trac_project_domain.nil? ? 'localhost' : @trac_project_domain %>
+smtp_from_name = Trac Project
 smtp_password = 
 smtp_port = 25
-smtp_replyto = trac@<%= @node[:domain] %>
+smtp_replyto = trac@<%= @trac_project_domain.nil? ? 'localhost' : @trac_project_domain %>
 smtp_server = localhost
 smtp_subject_prefix = __default__
-smtp_user = 
+smtp_user = trac@<%= @trac_project_domain.nil? ? 'localhost' : @trac_project_domain %>
 ticket_subject_template = $prefix #$ticket.id: $summary
 use_public_cc = false
 use_short_addr = false
@@ -79,11 +181,11 @@ use_tls = false
 [project]
 admin = 
 admin_trac_url = .
-descr = <%= @trac_project_desc %>
+descr = <%= @trac_project_desc.nil? ? '' : @trac_project_desc %>
 footer = Visit the Trac open source project at<br /><a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
 icon = common/trac.ico
-name = <%= @trac_project_name %>
-url = <%= @trac_url %>
+name = <%= @trac_project_name.nil? ? '' : @trac_project_name %>
+url = <%= @trac_url.nil? ? '' : @trac_url %>
 
 [query]
 default_anonymous_query = status!=closed&cc~=$USER
@@ -103,9 +205,11 @@ stats_provider = DefaultTicketGroupStatsProvider
 [search]
 min_query_length = 3
 
+<% if !@trac_svn_branches.nil? && !@trac_svn_tags.nil? -%>
 [svn]
 branches = <%= @trac_svn_branches.join(',') %>
 tags = <%= @trac_svn_tags.join(',') %>
+<% end -%>
 
 [ticket]
 default_cc = 
@@ -165,14 +269,14 @@ debug_sql = False
 default_charset = iso-8859-15
 htdocs_location = 
 ignore_auth_case = false
-mainnav = <%= @trac_mainnav.join(',') %>
-metanav = <%= @trac_metanav.join(',') %>
+mainnav = <%= @trac_mainnav.nil? ? '' : @trac_mainnav.join(',') %>
+metanav = <%= @trac_metanav.nil? ? '' : @trac_metanav.join(',') %>
 mysqldump_path = mysqldump
 permission_policies = DefaultPermissionPolicy, LegacyAttachmentPolicy
-permission_store = DefaultPermissionStore
+permission_store = LdapPermissionStore
 pg_dump_path = pg_dump
-repository_dir = <%= @trac_svn_repo %>
-repository_type = svn
+repository_dir = <%= @trac_repo_dir.nil? ? '' : @trac_repo_dir.join(',')  %>
+repository_type = <%= @trac_repo_type.nil? ? '' : @trac_repo_type.join(',')  %>
 secure_cookies = False
 show_email_addresses = false
 show_ip_addresses = false
@@ -184,4 +288,3 @@ ignore_missing_pages = false
 max_size = 262144
 render_unsafe_content = false
 split_page_names = false
-

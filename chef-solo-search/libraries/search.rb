@@ -77,5 +77,4 @@ if Chef::Config[:solo]
       end
     end
   end
-
 end

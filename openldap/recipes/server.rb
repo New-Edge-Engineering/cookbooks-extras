@@ -60,6 +60,14 @@ service "slapd" do
   action [:enable, :start]
 end
 
+node[:openldap][:schemas].each do |schema|
+  cookbook_file "#{node[:openldap][:dir]}/schema/#{schema['name']}" do
+    source "#{schema['file']}"
+    cookbook "#{schema['cookbook']}"
+    mode "0644"
+  end
+end
+
 case node[:lsb][:codename]
 when "intrepid","jaunty"
   template "/etc/default/slapd" do
