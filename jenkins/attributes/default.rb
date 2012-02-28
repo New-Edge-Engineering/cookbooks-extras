@@ -123,3 +123,4 @@ default[:jenkins][:http_proxy][:host_aliases]         = []
 default[:jenkins][:http_proxy][:client_max_body_size] = "1024m"
 default[:jenkins][:http_proxy][:basic_auth_username] = "jenkins"
 default[:jenkins][:http_proxy][:basic_auth_password] = "jenkins"
+default[:jenkins][:http_proxy][:ssl]                 = false

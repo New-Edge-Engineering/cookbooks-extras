@@ -1,5 +1,5 @@
 <% if @www_redirect -%>
-<VirtualHost *:80>
+<VirtualHost *:443>
   ServerName        www.<%= @host_name %>
 <% @host_aliases.each do |a| -%>
   ServerAlias       www.<%= a %>
@@ -11,20 +11,24 @@
 </VirtualHost>
 
 <% end -%>
-<VirtualHost *:80>
+<VirtualHost *:443>
   ServerName        <%= @host_name %>
   ProxyRequests     Off
 <% @host_aliases.each do |a| -%>
   ServerAlias       <%= a %>
 <% end -%>
 
-<% if @ssl %>
+  SSLEngine on
+  SSLOptions +StdEnvVars
+  SSLProtocol All
+  SSLCipherSuite HIGH:+MEDIUM:+TLSv1
+  SSLVerifyClient none
+  SSLCertificateFile <%= node[:jenkins][:http_proxy][:ssl_pem] %>
+  SSLCertificateKeyFile <%= node[:jenkins][:http_proxy][:ssl_key] %>
+
   RewriteEngine On
-  RewriteCond %{REQUEST_URI} ^{.*}/{2,}(.*)$
-  RewriteRule . %1%2 [R=301,L]
-  
-  RewriteRule ^/login https://<%= @host_name %>/login [R,NE]
-<% end %>
+  RewriteCond %{REQUEST_URI} ^/ [NC]
+  RewriteRule !^/(login|j_acegi_security_check|loginError) http://<%= @host_name %>%{REQUEST_URI} [NC]
 
   # Local reverse proxy authorization override
   # Most unix distribution deny proxy by default
@@ -37,14 +41,4 @@
   ProxyPreserveHost on
   ProxyPass         /  http://localhost:<%= node[:jenkins][:server][:port] %>/
   ProxyPassReverse  /  http://localhost:<%= node[:jenkins][:server][:port] %>/
-
-<% if !@ssl %>
-  <Location />
-    AuthType basic
-    AuthName "Jenkins"
-    AuthBasicProvider file
-    AuthUserFile <%= File.join(node.apache.dir, "htpasswd") %>
-    require valid-user
-  </Location>
-<% end %>
 </VirtualHost>
