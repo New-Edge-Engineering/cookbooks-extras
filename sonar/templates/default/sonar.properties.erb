@@ -44,6 +44,11 @@ sonar.jdbc.username:                       <%= node['sonar']['jdbc_username'] %>
 sonar.jdbc.user:                           <%= node['sonar']['jdbc_username'] %>
 sonar.jdbc.password:                       <%= node['sonar']['jdbc_password'] %>
 
+#----- Database details
+sonar.jdbc.url:                            <%= node[:sonar][:jdbc_url] %>
+sonar.jdbc.driverClassName:                <%= node[:sonar][:jdbc_driverClassName] %>
+sonar.jdbc.validationQuery:                <%= node[:sonar][:jdbc_validationQuery] %>
+
 #----- Embedded database Derby
 # Note : it does accept connections from remote hosts, so the
 # sonar server and the maven plugin must be executed on the same host.
@@ -63,10 +68,10 @@ sonar.jdbc.password:                       <%= node['sonar']['jdbc_password'] %>
 
 #----- MySQL 5.x/6.x
 # Comment the embedded database and uncomment the following properties to use MySQL. The validation query is optional.
-sonar.jdbc.url:                            jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8
+#sonar.jdbc.url:                            jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8
 #sonar.jdbc.url:                            jdbc:mysql://localhost:3306/sonar
-sonar.jdbc.driverClassName:                com.mysql.jdbc.Driver
-sonar.jdbc.validationQuery:                select 1
+#sonar.jdbc.driverClassName:                com.mysql.jdbc.Driver
+#sonar.jdbc.validationQuery:                select 1
 
 
 #----- Oracle 10g/11g
