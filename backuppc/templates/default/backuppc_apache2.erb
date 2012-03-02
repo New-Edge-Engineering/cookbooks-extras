@@ -1,0 +1,34 @@
+<VirtualHost *:443>
+  ServerName        <%= @host_name %>
+<% @host_aliases.each do |a| -%>
+  ServerAlias       <%= a %>
+<% end -%>
+
+  SSLEngine on
+  SSLOptions +StdEnvVars
+  SSLProtocol All
+  SSLCipherSuite HIGH:+MEDIUM:+TLSv1
+  SSLVerifyClient none
+  SSLCertificateFile <%= @ssl_crt %>
+  SSLCertificateKeyFile <%= @ssl_key %>
+
+  Alias /backuppc <%= @shared_dir %>/cgi-bin/
+
+  <Directory <%= @shared_dir %>/cgi-bin/>
+    AllowOverride  None
+    Allow          from all
+
+    Options        ExecCGI FollowSymlinks
+    AddHandler     cgi-script .cgi
+    DirectoryIndex index.cgi
+
+    AuthGroupFile  <%= @config_dir %>/htgroup
+    AuthUserFile   <%= @config_dir %>/htpasswd
+    AuthType       basic
+    AuthName       "<%= @realm %>"
+    require        valid-user
+  </Directory>
+  
+  ErrorLog /var/log/apache2/<%= @host_name %>.error.log
+  CustomLog /var/log/apache2<%= @host_name %>.access.log common
+</VirtualHost>

@@ -1,0 +1,17 @@
+default[:backuppc][:user]                             = "backuppc"
+default[:backuppc][:config_dir]                       = "/etc/backuppc"
+default[:backuppc][:shared_dir]                       = "/usr/share/backuppc"
+default[:backuppc][:http_proxy][:variant]             = "apache2"
+default[:backuppc][:http_proxy][:host_name]           = nil
+default[:backuppc][:http_proxy][:host_aliases]        = []
+default[:backuppc][:http_proxy][:context]             = "/"
+default[:backuppc][:http_proxy][:basic_auth_username] = "backuppc"
+default[:backuppc][:http_proxy][:basic_auth_password] = "backuppc"
+default[:backuppc][:http_proxy][:ssl_pem]             = nil # set if using existing certificate
+default[:backuppc][:http_proxy][:ssl_key]             = nil # set if using existing certificate
+default[:backuppc][:http_proxy][:auth_realm]          = "New Edge Engineering Ltd Backup"
+default[:backuppc][:http_proxy][:state]               = nil # set if using self-signed certificate
+default[:backuppc][:http_proxy][:location]            = nil # set if using self-signed certificate
+default[:backuppc][:http_proxy][:organization]        = nil # set if using self-signed certificate
+default[:backuppc][:http_proxy][:server_name]         = nil # set if using self-signed certificate
+default[:backuppc][:http_proxy][:admin_email]         = nil # set if using self-signed certificate
