@@ -102,18 +102,18 @@ default[:jenkins][:node][:idle_delay] = 1
 
 #"Node Properties"
 #[x] "Environment Variables"
-default[:jenkins][:node][:env] = nil
+default[:jenkins][:node][:env]                        = nil
 
-default[:jenkins][:node][:user] = "jenkins-node"
+default[:jenkins][:node][:user]                       = "jenkins-node"
 
 #SSH options
-default[:jenkins][:node][:ssh_host] = node[:fqdn]
-default[:jenkins][:node][:ssh_port] = 22
-default[:jenkins][:node][:ssh_user] = default[:jenkins][:node][:user]
-default[:jenkins][:node][:ssh_pass] = nil
-default[:jenkins][:node][:jvm_options] = nil
+default[:jenkins][:node][:ssh_host]                   = node[:fqdn]
+default[:jenkins][:node][:ssh_port]                   = 22
+default[:jenkins][:node][:ssh_user]                   = default[:jenkins][:node][:user]
+default[:jenkins][:node][:ssh_pass]                   = nil
+default[:jenkins][:node][:jvm_options]                = nil
 #jenkins master defaults to: "#{ENV['HOME']}/.ssh/id_rsa"
-default[:jenkins][:node][:ssh_private_key] = nil
+default[:jenkins][:node][:ssh_private_key]            = nil
 
 default[:jenkins][:http_proxy][:variant]              = nil
 default[:jenkins][:http_proxy][:www_redirect]         = "disable"
@@ -121,6 +121,7 @@ default[:jenkins][:http_proxy][:listen_ports]         = [ 80 ]
 default[:jenkins][:http_proxy][:host_name]            = nil
 default[:jenkins][:http_proxy][:host_aliases]         = []
 default[:jenkins][:http_proxy][:client_max_body_size] = "1024m"
-default[:jenkins][:http_proxy][:basic_auth_username] = "jenkins"
-default[:jenkins][:http_proxy][:basic_auth_password] = "jenkins"
-default[:jenkins][:http_proxy][:ssl]                 = false
+default[:jenkins][:http_proxy][:basic_auth_username]  = "jenkins"
+default[:jenkins][:http_proxy][:basic_auth_password]  = "jenkins"
+default[:jenkins][:http_proxy][:ssl_pem]              = nil
+default[:jenkins][:http_proxy][:ssl_key]              = nil

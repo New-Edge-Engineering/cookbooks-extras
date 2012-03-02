@@ -1,0 +1,28 @@
+<VirtualHost *:80>
+  ServerAdmin       <%= @admin_email %>
+  ServerName        <%= @host_name %>
+<% @host_aliases.each do |a| -%>
+  ServerAlias       <%= a %>
+<% end -%>
+  
+  SSLEngine         Off
+  
+  ProxyRequests     Off
+  ProxyPreserveHost On
+  ProxyPass         / http://<%= node['sonar']['web_host'] %>:<%= node['sonar']['web_port'] %>/
+  ProxyPassReverse  / http://<%= node['sonar']['web_host'] %>:<%= node['sonar']['web_port'] %>/
+  
+  RewriteEngine     On
+  RewriteCond       %{REQUEST_URI} ^{.*}/{2,}(.*)$
+  RewriteRule       . %1%2 [R=301,L]
+  
+  RewriteRule       ^/sessions/new https://<%= @host_name %>/sessions/new [R,NE]
+  
+  ErrorLog          /var/log/apache2/<%= node['sonar']['web_domain'] %>.error.log
+  CustomLog         /var/log/apache2/<%= node['sonar']['web_domain'] %>.access.log common
+  
+  <Proxy http://<%= node['sonar']['web_host'] %>:<%= node['sonar']['web_port'] %>/* >
+    Order deny,allow
+    Allow from all
+  </Proxy>
+</VirtualHost>

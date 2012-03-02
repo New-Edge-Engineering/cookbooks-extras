@@ -38,11 +38,55 @@ Apache configuration is going to vary based on your own application's requiremen
 
 include_recipe "apache2"
 
+host_name = node[:sonar][:web_domain] || node[:fqdn]
+
+if node[:sonar][:http_proxy][:ssl_crt] && node[:sonar][:http_proxy][:ssl_key]
+  cookbook_file "/etc/ssl/private/#{host_name}.key" do
+    source "#{node[:sonar][:http_proxy][:ssl_key]}"
+  end
+  cookbook_file "/etc/ssl/certs/#{host_name}.crt" do
+    source "#{node[:sonar][:http_proxy][:ssl_crt]}"
+  end
+else
+  create_ssl_pem "#{host_name}-ssl-pem" do
+    domain host_name
+    subject "/C=GB/ST=#{node[:sonar][:http_proxy][:state]}/L=#{node[:sonar][:http_proxy][:location]}/O=#{node[:sonar][:http_proxy][:organization]}/OU=Operations/CN=#{node[:sonar][:http_proxy][:server_name]}/emailAddress=#{node[:sonar][:http_proxy][:admin_email]}"
+  end
+  node[:sonar][:http_proxy][:ssl_key] = "/etc/ssl/private/#{host_name}.key"
+  node[:sonar][:http_proxy][:ssl_crt] = "/etc/ssl/certs/#{host_name}.crt"
+end
+
 template "#{node[:apache][:dir]}/sites-available/sonar_server.conf" do
-  source "apache_site.erb"
+  source "proxy_apache2.erb"
   owner "root"
   group "root"
   mode 0644
+  variables(
+    :host_name    => host_name,
+    :host_aliases => node[:sonar][:http_proxy][:host_aliases],
+    :admin_email  => node[:sonar][:http_proxy][:admin_email]
+  )
+  if File.exists?("#{node[:apache][:dir]}/sites-enabled/sonar_server.conf")
+    notifies  :restart, 'service[apache2]'
+  end
+end
+
+template "#{node[:apache][:dir]}/sites-available/sonar_server_ssl.conf" do
+  source      "proxy_apache2_ssl.erb"
+  owner       'root'
+  group       'root'
+  mode        '0644'
+  variables(
+    :admin_email  => node[:sonar][:http_proxy][:admin_email],
+    :host_name    => host_name,
+    :host_aliases => node[:sonar][:http_proxy][:host_aliases],
+    :ssl_key      => node[:sonar][:http_proxy][:ssl_key],
+    :ssl_crt      => node[:sonar][:http_proxy][:ssl_crt]
+  )
+
+  if File.exists?("#{node[:apache][:dir]}/sites-enabled/sonar_server_ssl.conf")
+    notifies  :restart, 'service[apache2]'
+  end
 end
 
 if node['sonar']['enable_mod_proxy_ajp'] == true
@@ -52,5 +96,9 @@ else
 end
 
 apache_site "sonar_server.conf" do
+  enable :true
+end
+
+apache_site "sonar_server_ssl.conf" do
   enable :true
 end
