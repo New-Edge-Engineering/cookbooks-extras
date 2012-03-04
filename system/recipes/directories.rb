@@ -10,9 +10,10 @@ node[:system][:directories].each do |directory|
   case node[:platform]
   when "debian", "ubuntu"
     directory directory[:path] do
-      owner directory[:owner]
-      group directory[:group]
-      mode  directory[:umask]
+      owner     directory[:owner]
+      group     directory[:group]
+      mode      directory[:umask]
+      recursive true
     end
   end
 end

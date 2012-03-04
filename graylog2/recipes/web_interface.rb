@@ -51,6 +51,7 @@ link "#{node.graylog2.basedir}/web" do
   to "#{node.graylog2.basedir}/rel/graylog2-web-interface-#{node.graylog2.web_interface.version}"
 end
 
+
 # Perform bundle install on the newly-installed Graylog2 web interface version
 execute "bundle install" do
   cwd "#{node.graylog2.basedir}/web"

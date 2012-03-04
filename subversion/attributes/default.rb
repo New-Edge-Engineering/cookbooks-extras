@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-default['subversion']['repo_dir']    = '/var/local/lib/svn/repos'
+default['subversion']['repo_dir']    = '/var/lib/svn/repos'
 default['subversion']['repos']       = []
 default['subversion']['server_name'] = 'svn'
 default['subversion']['user']        = 'subversion'

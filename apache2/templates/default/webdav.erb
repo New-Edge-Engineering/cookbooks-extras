@@ -1,0 +1,43 @@
+<% @virtualhosts.each do |host| -%>
+<VirtualHost <%= host[:ip_address].nil? || host[:ip_address].empty? ? '*' : host[:ip_address] %>:443>
+  ServerAdmin                  <%= host[:admin_email] %>
+  ServerName                   <%= host[:server_name] %>
+<%  if host[:server_aliases] -%>
+  ServerAlias                  <%= host[:server_aliases] %>
+<%  end %>
+  
+  KeepAlive                    off
+  
+  SSLEngine                    on
+  SSLOptions                   +StdEnvVars
+  SSLProtocol                  All
+  SSLCipherSuite               HIGH:+MEDIUM:+TLSv1
+  SSLVerifyClient              none
+  SSLCertificateFile           <%= host[:ssl_crt] %>
+  SSLCertificateKeyFile        <%= host[:ssl_key] %>
+  
+  DavLockDB                    <%= host[:davlock]%>
+  
+  DocumentRoot                 <%= host[:document_root]%>
+  
+<%  host[:locations].each do |location| -%>
+  Alias                        <%= location[:alias] %> <%= location[:path] %>
+  <Location <%= location[:alias] %> >
+    DAV                        on
+    AuthType                   Basic
+    AuthName                   "<%= location[:realm] %>"
+<%   if location[:ldap] %>
+    AuthBasicProvider          ldap
+    AuthLDAPBindDN             "<%= location[:ldap][:bind_dn] %>"
+    AuthLDAPBindPassword       "<%= location[:ldap][:bind_password] %>"
+    AuthLDAPURL                "<%= location[:ldap][:url] %>"
+    AuthLDAPGroupAttributeIsDN on
+    Require                    ldap-group <%= location[:ldap][:group] %>
+<%   end %>
+  </Location>
+<%  end -%>
+  
+  ErrorLog /var/log/apache2/<%= host[:log] %>.error.log
+  CustomLog /var/log/apache2/<%= host[:log] %>.access.log combined
+</Virtualhost>
+<% end -%>

@@ -42,7 +42,7 @@ node[:trac][:projects].each do |project|
     end
     user "root"
     group "root"
-    only_if "/usr/bin/test ! -d #{project[:dir]}/#{project[:name]}"
+    not_if do File.exists?("#{project[:dir]}/#{project[:name]}/conf/trac.ini") end
   end
   
   directory "#{project[:dir]}/#{project[:name]}/apache" do
@@ -80,10 +80,6 @@ node[:trac][:projects].each do |project|
     )
   end
   
-  execute "trac-#{project[:name]}-upgrade" do
-    command "trac-admin #{project[:dir]}/#{project[:name]} upgrade"
-  end
-  
   cookbook_file "#{project[:dir]}/#{project[:name]}/apache/trac.wsgi" do
     source "trac.wsgi"
     owner  "www-data"
@@ -92,5 +88,8 @@ node[:trac][:projects].each do |project|
     action :create_if_missing
   end
   
+  execute "trac-#{project[:name]}-upgrade" do
+    command "trac-admin #{project[:dir]}/#{project[:name]} upgrade"
+  end
   Log "#{project[:name]} Trac Project setup at #{project[:dir]}"
 end

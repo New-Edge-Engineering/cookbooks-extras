@@ -30,5 +30,5 @@
   </Directory>
   
   ErrorLog /var/log/apache2/<%= @host_name %>.error.log
-  CustomLog /var/log/apache2<%= @host_name %>.access.log common
+  CustomLog /var/log/apache2/<%= @host_name %>.access.log common
 </VirtualHost>
