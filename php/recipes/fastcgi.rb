@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: dms
-# Recipe:: web-interface
+# Cookbook Name:: php
+# Recipe:: fastcgi
 #
 # Copyright 2011, New Edge Engineering Ltd
 #
