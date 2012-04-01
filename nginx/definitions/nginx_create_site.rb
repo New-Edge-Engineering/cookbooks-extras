@@ -11,7 +11,7 @@
 
 define :nginx_create_site, :template => { :source => "nginx.site.erb", :cookbook => nil }, :listen => 80, :domains => [], :ssl => [], :locations => [], :log => "" do
   log "Installing #{params[:nginx_create_site]}"
-  template "#{node[:nginx][:dir]}/sites-available/#{site}" do
+  template "#{node[:nginx][:dir]}/sites-available/#{params[:nginx_create_site]}" do
     source params[:template][:source]
     if !params[:template][:cookbook].nil?
       cookbook params[:template][:cookbook]
@@ -28,7 +28,7 @@ define :nginx_create_site, :template => { :source => "nginx.site.erb", :cookbook
     notifies :reload, resources(:service => "nginx"), :delayed
   end
   
-  nginx_site site do
+  nginx_site params[:nginx_create_site] do
     action :run
   end 
 end
