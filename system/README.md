@@ -25,5 +25,6 @@ All node attributes are set under the `system` name space.
 * `packages`
 * `hosts` 
 
-= USAGE:
+USAGE
+=====
 
