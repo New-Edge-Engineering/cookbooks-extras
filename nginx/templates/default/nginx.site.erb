@@ -1,0 +1,15 @@
+server {
+  listen       <%= @listen %>;
+  server_name  <%= @domains.join(" ") %>;
+
+  access_log   <%= @log %>/access.log;
+  error_log    <%= @log %>/error.log;
+
+<% @locations.each do |location| %>
+  location <%= location[:path] %> {
+<% location[:parameters].each do |parameter| %>
+    <%= parameter[0] %> <%= parameter[1] %>;
+<% end %>
+  }
+<% end %>
+}

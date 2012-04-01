@@ -9,21 +9,22 @@
 # A generic way to create multiple sites with many locations base upon a template.
 #
 
-define :nginx_create_site, :template => { :source => "nginx.site.erb", cookbook => nil }, port => 80, :domains => [], :locations => [], :log => "" do
+define :nginx_create_site, :template => { :source => "nginx.site.erb", :cookbook => nil }, :listen => 80, :domains => [], :ssl => [], :locations => [], :log => "" do
   log "Installing #{params[:nginx_create_site]}"
   template "#{node[:nginx][:dir]}/sites-available/#{site}" do
-    source :template[:source]
-    if !:template[:cookbook].nil?
-      cookbook :template[:cookbook]
+    source params[:template][:source]
+    if !params[:template][:cookbook].nil?
+      cookbook params[:template][:cookbook]
     end
     mode 0644
     owner node[:nginx][:user]
     group node[:nginx][:user]
     variables(
-      :listen => data[:listen],
-      :log => data[:log],
-      :hostname => data[:domain],
-      :locations => data[:locations])
+      :listen => params[:listen],
+      :domains => params[:domains],
+      :log => params[:nginx_create_site],
+      :ssl => params[:ssl],
+      :locations => params[:locations])
     notifies :reload, resources(:service => "nginx"), :delayed
   end
   

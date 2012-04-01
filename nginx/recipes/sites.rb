@@ -12,10 +12,10 @@
 node[:nginx][:sites].each do |site|
   nginx_create_site site[:name] do
     template  site[:template]
-    port      site[:port]
+    listen    site[:port]
     domains   site[:domains]
+    ssl       site[:ssl]
     locations site[:locations]
-    log       site[:log]
     action :run
   end
 end
