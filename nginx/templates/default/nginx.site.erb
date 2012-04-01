@@ -4,6 +4,8 @@ server {
 
   access_log   <%= @log %>/access.log;
   error_log    <%= @log %>/error.log;
+  
+  root         <%= @docments %>;
 
 <% @locations.each do |location| %>
   location <%= location[:path] %> {

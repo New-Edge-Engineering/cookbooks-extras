@@ -41,6 +41,7 @@ All node attributes are set under the `nginx` namespace.
 ** `domain` - array of domain names
 ** `locations` - array of uri locations for the server
 ** `log` - the name of the sites log
+** `root` - the base path of the documents to be served
 
 The following attributes are set at the 'normal' node level via the `nginx::source` recipe.
 
